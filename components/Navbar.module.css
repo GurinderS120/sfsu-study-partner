@@ -1,0 +1,7 @@
+.nav-toggle-btn {
+    border: none;
+}
+
+.nav-toggle-btn:focus {
+    box-shadow: none;
+}
