@@ -3,7 +3,7 @@
 ### pages directory/folder:
 
 Represents the different `pages` for our website, so if
-a user goes to our website's url/ then the `index.js` will be served since
+a user goes to `our website's url/` then the `index.js` will be served since
 the user requested the home page (represented by the "/").
 
 Similarly if a user types in `our website's url/login` then the `login.js` page is
