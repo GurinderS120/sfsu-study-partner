@@ -2,7 +2,7 @@
 
 ### Getting Started:
 
-1. Go the our project's root folder and run `npm install`
+1. Go to our project's root folder and run `npm install`
 2. In order to spin up the development server run `npm run dev`
 
 ### pages directory/folder:
