@@ -1,4 +1,6 @@
 import dynamic from "next/dynamic";
+// import ZoomMeeting from "../components/zoomMeeting";
+// import Layout from "../components/layout";
 import { useState } from "react";
 
 // Since zoom functions use "window" object along with other DOM objects
@@ -6,9 +8,12 @@ import { useState } from "react";
 // there is no "window" object available in Node runtime environment.
 // Because of which we specify "ssr: false" (set server-side-rendering to
 // false)
-const ZoomMeeting = dynamic(() => import("../components/zoomMeeting"), {
-  ssr: false,
-});
+const ZoomMeeting = dynamic(
+  () => import("../components/zoomMeeting").then((mod) => mod.default),
+  {
+    ssr: false,
+  }
+);
 
 function Meeting() {
   const [meetingUrl, setMeetingUrl] = useState("");
@@ -16,6 +21,7 @@ function Meeting() {
   return (
     <div>
       <ZoomMeeting />
+      {/* <Layout /> */}
     </div>
   );
 }
