@@ -8,6 +8,10 @@ import Link from "next/link";
 // Async function that is responsible for logging in users by connecting
 // to Firebase
 async function login(values) {
+  // Nextjs pre-renders the page using the node server, where the 'window' object
+  // is not available as it is in the browser. Therefore, we import app in this
+  // function because first app uses 'window' object and second the 'login' function
+  // only get's called in the browser.
   const app = (await import("../firebase/config")).app;
   const auth = getAuth(app);
 
@@ -56,10 +60,8 @@ function Login() {
           </Button>
 
           <h6 className="mt-3 text-center">
-            <span>Don&apos;t have an account? </span>
-            <Link href="/signup" className="ml-1 lg-nav-links">
-              Sign up
-            </Link>
+            <span className="me-1">Don&apos;t have an account?</span>
+            <Link href="/register">Register</Link>
           </h6>
         </Form>
       </div>
