@@ -74,7 +74,13 @@ function Login() {
 
   return (
     <>
-      {isAlert && <CustomAlert variant={variant} message={message} />}
+      {isAlert && (
+        <CustomAlert
+          variant={variant}
+          message={message}
+          setIsAlert={setIsAlert}
+        />
+      )}
 
       <Formik
         initialValues={{ email: "", password: "" }}
