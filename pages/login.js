@@ -14,7 +14,7 @@ import Link from "next/link";
 
 // Async function that is responsible for logging in users by connecting
 // to Firebase
-async function login(values) {
+async function login(values, setIsAlert, setVariant, setMessage) {
   // Nextjs pre-renders the page using the node server, where the 'window' object
   // is not available as it is in the browser. Therefore, we import app in this
   // function because first app uses 'window' object and second the 'login' function
@@ -29,11 +29,15 @@ async function login(values) {
       values.password
     );
     if (!userInfo.user.emailVerified) {
-      alert("Please verify your email first");
+      setIsAlert(true);
+      setVariant("warning");
+      setMessage("Please verify your email first");
       signOut(auth);
     }
   } catch (error) {
-    console.log(error);
+    setIsAlert(true);
+    setVariant("danger");
+    setMessage(error.message);
   }
 }
 
@@ -63,14 +67,24 @@ async function resetPassword(
     setVariant("info");
     setMessage("Please check your SFSU email for resetting your password");
   } catch (error) {
-    console.log(error);
+    setIsAlert(true);
+    setVariant("danger");
+    setMessage(error.message);
   }
 }
 
 function Login() {
   const [isAlert, setIsAlert] = useState(false);
   const [variant, setVariant] = useState("info");
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState("message");
+
+  function loginHelper(values) {
+    login(values, setIsAlert, setVariant, setMessage);
+  }
+
+  function resetPassHelper(email, errors) {
+    resetPassword(email, errors, setIsAlert, setVariant, setMessage);
+  }
 
   return (
     <>
@@ -84,7 +98,7 @@ function Login() {
 
       <Formik
         initialValues={{ email: "", password: "" }}
-        onSubmit={login}
+        onSubmit={loginHelper}
         validationSchema={signinSchema}
       >
         {(props) => (
@@ -112,13 +126,7 @@ function Login() {
 
               <p
                 onClick={() =>
-                  resetPassword(
-                    props.values.email,
-                    props.errors.email,
-                    setIsAlert,
-                    setVariant,
-                    setMessage
-                  )
+                  resetPassHelper(props.values.email, props.errors.email)
                 }
                 role="button"
                 className="align-self-end small mt-1 mb-0 text-muted cursor"
