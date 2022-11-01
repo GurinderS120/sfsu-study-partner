@@ -3,8 +3,22 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Offcanvas from "react-bootstrap/Offcanvas";
+import { selectUser } from "../reduxStateManagement/slices/userSlice";
+import { useSelector } from "react-redux";
+import { getAuth, signOut } from "firebase/auth";
+
+async function logout() {
+  const app = (await import("../firebase/config")).app;
+  const auth = getAuth(app);
+  // Firebase Auth function to logout the user. This will in turn cause
+  // the callback function defined using "onAuthStateChanged" listener
+  // to run changing the global user state (logging the user out).
+  signOut(auth);
+}
 
 function NavbarG() {
+  const user = useSelector(selectUser);
+
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container fluid>
@@ -36,7 +50,11 @@ function NavbarG() {
               </Nav.Link>
             </Nav>
             <Nav>
-              <Nav.Link href="/login">Login</Nav.Link>
+              {user ? (
+                <Nav.Link onClick={logout}>Logout</Nav.Link>
+              ) : (
+                <Nav.Link href="/login">Login</Nav.Link>
+              )}
             </Nav>
           </Offcanvas.Body>
         </Navbar.Offcanvas>
