@@ -1,10 +1,44 @@
 import Head from "next/head";
 import Navbar from "./navbar";
+import {
+  signUserIn,
+  signUserOut,
+} from "../reduxStateManagement/slices/userSlice";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
 
 // Layout acts as a wrapper for our entire website, and children represent
 // different pages (we pass in a page one at a time as Layout's child,
 // take a look at _app.js file)
 function Layout({ children }) {
+  // To dispatch an action
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    // The following function gets called when our website gets loaded
+    // initially. Its responsibility is to get logged in user from the
+    // Firebase. Additionally we also attach a listner to the Auth
+    // state that helps to update the global user state (object) whenever
+    // a user logs in or logs out.
+    async function setLoggedInUser() {
+      const app = (await import("../firebase/config")).app;
+      const auth = getAuth(app);
+      onAuthStateChanged(auth, (userAuth) => {
+        if (userAuth) {
+          // User is logged in, send the user's details to redux, and store the current user in the state
+          dispatch(
+            signUserIn({ user: { uid: userAuth.uid, email: userAuth.email } })
+          );
+        } else {
+          dispatch(signUserOut());
+        }
+      });
+    }
+
+    setLoggedInUser();
+  }, []);
+
   return (
     <>
       <Head>
