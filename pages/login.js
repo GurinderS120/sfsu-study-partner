@@ -17,8 +17,7 @@ import Link from "next/link";
 async function login(values, setIsAlert, setVariant, setMessage) {
   // Nextjs pre-renders the page using the node server, where the 'window' object
   // is not available as it is in the browser. Therefore, we import app in this
-  // function because first app uses 'window' object and second the 'login' function
-  // only get's called in the browser.
+  // function because first app uses 'window' object and second the 'login' function only get's called in the browser.
   const app = (await import("../firebase/config")).app;
   const auth = getAuth(app);
 
