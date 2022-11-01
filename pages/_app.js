@@ -1,6 +1,8 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import Layout from "../components/layout";
 import "../styles/globals.css";
+import { Provider } from "react-redux";
+import store from "../reduxStateManagement/store";
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -11,9 +13,11 @@ function MyApp({ Component, pageProps }) {
     // like navbar, footer, etc.
     // So we wrap each page (represented by Component) in the Layout component
     // and in the Layout component we display the page (Component) as its child.
-    <Layout>
-      <Component {...pageProps} />
-    </Layout>
+    <Provider store={store}>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </Provider>
   );
 }
 
