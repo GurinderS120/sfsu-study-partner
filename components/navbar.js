@@ -20,7 +20,7 @@ function NavbarG() {
   const user = useSelector(selectUser);
 
   return (
-    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+    <Navbar fixed="top" collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container fluid>
         <Navbar.Brand href="/">Navbar</Navbar.Brand>
         <Navbar.Toggle
