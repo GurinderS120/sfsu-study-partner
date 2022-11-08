@@ -2,6 +2,7 @@ import NavStyles from "./Navbar.module.css";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
+import NavDropdown from "react-bootstrap/NavDropdown";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import { selectUser } from "../reduxStateManagement/slices/userSlice";
 import { useSelector } from "react-redux";
@@ -51,7 +52,7 @@ function NavbarG() {
             </Nav>
             <Nav>
               {user ? (
-                <Nav.Link onClick={logout}>Logout</Nav.Link>
+                <ProfileDropDown user={user} />
               ) : (
                 <Nav.Link href="/login">Login</Nav.Link>
               )}
@@ -60,6 +61,21 @@ function NavbarG() {
         </Navbar.Offcanvas>
       </Container>
     </Navbar>
+  );
+}
+
+function ProfileDropDown({ user }) {
+  return (
+    <NavDropdown align="end">
+      <NavDropdown.Item eventKey="4.1">
+        <p>{`Welcome ${user.email}`}</p>
+      </NavDropdown.Item>
+      <NavDropdown.Divider />
+      <NavDropdown.Item eventKey="4.2">Another action</NavDropdown.Item>
+      <NavDropdown.Item eventKey="4.3">Something else here</NavDropdown.Item>
+      <NavDropdown.Divider />
+      <NavDropdown.Item eventKey="4.4">Separated link</NavDropdown.Item>
+    </NavDropdown>
   );
 }
 
