@@ -33,5 +33,5 @@ component in component folder and the styles for a `page` in the styles folder.
 
 ### Potential issues:
 
-    1. Decrease the initial load JS
-    2. Avoid setting up `onAuthStateChanged` auth observer on every refresh
+1. Decrease the initial load JS
+2. Avoid setting up `onAuthStateChanged` auth observer on every refresh
