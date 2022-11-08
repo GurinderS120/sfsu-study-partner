@@ -30,3 +30,8 @@ We will be using `react-bootstrap` along with basic `bootstrap`. If you want to
 override some bootstrap styles then you can create a css file for that `page` or
 component like we did for Navbar. It's a good idea to put the styles for a
 component in component folder and the styles for a `page` in the styles folder.
+
+### Potential issues:
+
+    1. Decrease the initial load JS
+    2. Avoid setting up `onAuthStateChanged` auth observer on every refresh
