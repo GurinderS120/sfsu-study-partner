@@ -1,4 +1,5 @@
 import * as yup from "yup";
+const SUPPORTED_FILE_FORMATS = ["image/jpeg", "image/png"];
 
 export const signupSchema = yup.object().shape({
   email: yup
@@ -46,4 +47,27 @@ export const signinSchema = yup.object().shape({
       message: "Password must contain at least one number",
     })
     .required("Required"),
+});
+
+export const profileSchema = yup.object().shape({
+  pic: yup
+    .mixed()
+    .required("Required")
+    .test(
+      "FILE_FORMAT",
+      "Only jpg/jpeg, png image files are allowed",
+      (value) => {
+        return value && SUPPORTED_FILE_FORMATS.includes(value.type);
+      }
+    ),
+  name: yup
+    .string()
+    .min(1, "Name must be at least 1 character long")
+    .max(100, "Please enter a nickname")
+    .matches(
+      /^[\S]+(\s+[\S]+)*$/,
+      "Please remove spaces from the beginning and end"
+    )
+    .required("Required"),
+  major: yup.string().required("Please select your major"),
 });
