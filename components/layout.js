@@ -28,7 +28,13 @@ function Layout({ children }) {
         if (userAuth) {
           // User is logged in, send the user's details to redux, and store the current user in the state
           dispatch(
-            signUserIn({ user: { uid: userAuth.uid, email: userAuth.email } })
+            signUserIn({
+              user: {
+                uid: userAuth.uid,
+                email: userAuth.email,
+                name: userAuth.displayName,
+              },
+            })
           );
         } else {
           dispatch(signUserOut());
@@ -47,7 +53,7 @@ function Layout({ children }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar />
-      <main>{children}</main>
+      <main className="mt-5">{children}</main>
     </>
   );
 }
