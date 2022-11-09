@@ -32,6 +32,15 @@ async function login(values, setIsAlert, setVariant, setMessage) {
       setVariant("warning");
       setMessage("Please verify your email first");
       signOut(auth);
+    } else {
+      const Router = await import("next/router");
+
+      if (userInfo.user.displayName) {
+        Router.push("/app/studyRoom");
+      } else {
+        // Redirect the user to the home page
+        Router.push("/app/createProfile");
+      }
     }
   } catch (error) {
     setIsAlert(true);
