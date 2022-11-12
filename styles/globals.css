@@ -14,3 +14,8 @@
     font-weight: bold;
     margin-bottom: 2rem;
 }
+
+/* Override react-cropper styles */
+.cropper-view-box, .cropper-drag-box, .cropper-wrap-box, .cropper-container, .cropper-crop-box {
+    border-radius: 50%;
+}
