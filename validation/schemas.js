@@ -69,5 +69,12 @@ export const profileSchema = yup.object().shape({
       "Please remove spaces from the beginning and end"
     )
     .required("Required"),
-  major: yup.string().required("Please select your major"),
+  major: yup
+    .string()
+    .min(2, "Major must be at least 1 character long")
+    .required("Please enter your major")
+    .matches(
+      /^[\S]+(\s+[\S]+)*$/,
+      "Please remove spaces from the beginning and end"
+    ),
 });
