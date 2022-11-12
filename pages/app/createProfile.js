@@ -2,14 +2,32 @@ import { Formik, ErrorMessage, Form } from "formik";
 import Button from "react-bootstrap/Button";
 import InputField from "../../components/formik/inputField";
 import { profileSchema } from "../../validation/schemas";
+import { selectUser } from "../../reduxStateManagement/slices/userSlice";
+import uploadImageToCloudStorage from "../../helperFunctions/uploadImageToCloud";
+import uploadProfileToDatabase from "../../helperFunctions/uploadProfile";
+import { useSelector } from "react-redux";
 import PreviewImage from "../../components/previewImage";
 import { AiOutlinePlus } from "react-icons/ai";
 import { BiPencil } from "react-icons/bi";
 import Image from "next/image";
 import { useState, useRef } from "react";
 
-function submitProfile(values) {
-  console.log(values);
+function submitProfile(values, user) {
+  if (user) {
+    const imgStrgRef = `users/${
+      user.uid
+    }/userprofile/profileImg.${values.pic.type.replace("image/", "")}`;
+
+    uploadImageToCloudStorage({
+      url: values.pic.url,
+      type: values.pic.type,
+      storageRef: imgStrgRef,
+    });
+
+    uploadProfileToDatabase({ values, user, imgStrgRef });
+  } else {
+    alert("Not logged in");
+  }
 }
 
 // This function is responsible for compressing and converting file into
@@ -46,14 +64,23 @@ function handleAddImage(fileRef) {
 }
 
 function CreateProfile() {
+  const user = useSelector(selectUser);
   const [img, setImg] = useState(null);
   const [modal, setModal] = useState(false);
   const fileRef = useRef(null);
 
+  // We need to use a helper function because you can only use "UseSelector()"
+  // in a react-component function. Moreover, "values" are passed by Formik so
+  // they are not available in the "onSubmit" prop. The reason why we don't define
+  // "submitProfile" function within this component is because everytime this
+  // component renders the "submitProfile" function would get redefined which is
+  // not optimal, that's why we define it outside this component.
+  const submitHandler = (values) => submitProfile(values, user);
+
   return (
     <Formik
       initialValues={{ pic: "", name: "", major: "" }}
-      onSubmit={submitProfile}
+      onSubmit={submitHandler}
       validationSchema={profileSchema}
     >
       {(props) => (
