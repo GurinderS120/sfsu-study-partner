@@ -2,6 +2,7 @@ import { Formik, ErrorMessage, Form } from "formik";
 import Button from "react-bootstrap/Button";
 import InputField from "../../components/formik/inputField";
 import { profileSchema } from "../../validation/schemas";
+import PreviewImage from "../../components/previewImage";
 import { AiOutlinePlus } from "react-icons/ai";
 import { BiPencil } from "react-icons/bi";
 import Image from "next/image";
@@ -14,7 +15,7 @@ function submitProfile(values) {
 // This function is responsible for compressing and converting file into
 // base64 encoded string which can be used as a url in src attribute of
 // an image html tag
-async function handleFileChange(file, setFieldValue, setImg) {
+async function handleFileChange(file, setFieldValue, setImg, setModal) {
   if (file && ["image/jpeg", "image/png"].includes(file.type)) {
     const options = {
       maxWidthOrHeight: 1024,
@@ -30,6 +31,7 @@ async function handleFileChange(file, setFieldValue, setImg) {
     reader.onload = (e) => {
       setFieldValue("pic", { url: e.target.result, type: file.type });
       setImg({ url: e.target.result, type: file.type });
+      setModal(true);
     };
   } else {
     setFieldValue("pic", { url: "", type: file.type });
@@ -45,6 +47,7 @@ function handleAddImage(fileRef) {
 
 function CreateProfile() {
   const [img, setImg] = useState(null);
+  const [modal, setModal] = useState(false);
   const fileRef = useRef(null);
 
   return (
@@ -57,6 +60,17 @@ function CreateProfile() {
         <div className="form-container">
           <Form className="d-flex flex-column">
             <h3 className="form-header">Create Profile</h3>
+
+            {/* Once a user uploads an image we show the modal(popup), where they can edit that image using react-cropper */}
+            {img && img.url && (
+              <PreviewImage
+                modal={modal}
+                setModal={setModal}
+                setFieldValue={props.setFieldValue}
+                img={img}
+              />
+            )}
+
             {/* Pic input field */}
             <input
               ref={fileRef}
@@ -74,7 +88,8 @@ function CreateProfile() {
                 handleFileChange(
                   e.currentTarget.files[0],
                   props.setFieldValue,
-                  setImg
+                  setImg,
+                  setModal
                 );
               }}
             />
@@ -90,7 +105,7 @@ function CreateProfile() {
 
               {img && img.url && (
                 <BiPencil
-                  onClick={() => handleAddImage(fileRef)}
+                  onClick={() => setModal(true)}
                   className="bg-info p-2 rounded-circle text-white"
                   size={40}
                   type="button"
@@ -104,9 +119,9 @@ function CreateProfile() {
               className="text-danger small mb-0"
             />
 
-            {img && img.url && (
+            {props.values.pic && props.values.pic.url && (
               <Image
-                src={img.url}
+                src={props.values.pic.url}
                 className="rounded-circle"
                 alt="User profile pic"
                 width={300}
