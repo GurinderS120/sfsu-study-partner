@@ -33,6 +33,7 @@ function Layout({ children }) {
                 uid: userAuth.uid,
                 email: userAuth.email,
                 name: userAuth.displayName,
+                pic: userAuth.photoURL,
               },
             })
           );

@@ -7,28 +7,12 @@ import uploadImageToCloudStorage from "../../helperFunctions/uploadImageToCloud"
 import uploadProfileToDatabase from "../../helperFunctions/uploadProfile";
 import { useSelector } from "react-redux";
 import PreviewImage from "../../components/previewImage";
+import { updateUserProfile } from "../../reduxStateManagement/slices/userSlice";
+import { useDispatch } from "react-redux";
 import { AiOutlinePlus } from "react-icons/ai";
 import { BiPencil } from "react-icons/bi";
 import Image from "next/image";
 import { useState, useRef } from "react";
-
-function submitProfile(values, user) {
-  if (user) {
-    const imgStrgRef = `users/${
-      user.uid
-    }/userprofile/profileImg.${values.pic.type.replace("image/", "")}`;
-
-    uploadImageToCloudStorage({
-      url: values.pic.url,
-      type: values.pic.type,
-      storageRef: imgStrgRef,
-    });
-
-    uploadProfileToDatabase({ values, user, imgStrgRef });
-  } else {
-    alert("Not logged in");
-  }
-}
 
 // This function is responsible for compressing and converting file into
 // base64 encoded string which can be used as a url in src attribute of
@@ -65,17 +49,45 @@ function handleAddImage(fileRef) {
 
 function CreateProfile() {
   const user = useSelector(selectUser);
+  const dispatch = useDispatch();
   const [img, setImg] = useState(null);
   const [modal, setModal] = useState(false);
   const fileRef = useRef(null);
 
   // We need to use a helper function because you can only use "UseSelector()"
   // in a react-component function. Moreover, "values" are passed by Formik so
-  // they are not available in the "onSubmit" prop. The reason why we don't define
-  // "submitProfile" function within this component is because everytime this
-  // component renders the "submitProfile" function would get redefined which is
-  // not optimal, that's why we define it outside this component.
+  // they are not available in the "onSubmit" prop.
   const submitHandler = (values) => submitProfile(values, user);
+
+  async function submitProfile(values, user) {
+    if (user) {
+      const imgStrgRef = `users/${
+        user.uid
+      }/userprofile/profileImg.${values.pic.type.replace("image/", "")}`;
+
+      uploadImageToCloudStorage({
+        url: values.pic.url,
+        type: values.pic.type,
+        storageRef: imgStrgRef,
+      });
+
+      uploadProfileToDatabase({ values, user, imgStrgRef });
+
+      const { updateProfile, getAuth } = await import("firebase/auth");
+      const app = (await import("../../firebase/config")).app;
+      const auth = getAuth(app);
+
+      updateProfile(auth.currentUser, {
+        displayName: values.name,
+        photoURL: imgStrgRef,
+      });
+
+      // Update the user object stored as global state
+      dispatch(updateUserProfile({ name: values.name, pic: imgStrgRef }));
+    } else {
+      alert("Not logged in");
+    }
+  }
 
   return (
     <Formik

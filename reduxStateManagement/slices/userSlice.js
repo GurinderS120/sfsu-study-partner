@@ -15,10 +15,14 @@ const UserSlice = createSlice({
     signUserOut: (state) => {
       state.user = null;
     },
+    updateUserProfile: (state, action) => {
+      state.user.name = action.payload.name;
+      state.user.pic = action.payload.pic;
+    },
   },
 });
 
-export const { signUserIn, signUserOut } = UserSlice.actions;
+export const { signUserIn, signUserOut, updateUserProfile } = UserSlice.actions;
 
 // The following function allows us to select a value from the state
 // which in this case is user
