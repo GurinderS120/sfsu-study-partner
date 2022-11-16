@@ -68,7 +68,7 @@ function ProfileDropDown({ user }) {
   return (
     <NavDropdown align="end">
       <NavDropdown.Item eventKey="4.1">
-        <p>{`Welcome ${user.email}`}</p>
+        <p>{`Welcome, ${user.name ? user.name: user.email}`}</p>
       </NavDropdown.Item>
       <NavDropdown.Divider />
       <NavDropdown.Item eventKey="4.2">Another action</NavDropdown.Item>
