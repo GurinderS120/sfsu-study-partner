@@ -18,6 +18,8 @@ const UserSlice = createSlice({
     updateUserProfile: (state, action) => {
       state.user.name = action.payload.name;
       state.user.pic = action.payload.pic;
+      state.user.roomId = action.payload.roomId;
+      state.user.major = action.payload.major;
     },
   },
 });
