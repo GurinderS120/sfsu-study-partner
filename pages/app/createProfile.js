@@ -71,7 +71,11 @@ function CreateProfile() {
         storageRef: imgStrgRef,
       });
 
-      uploadProfileToDatabase({ values, user, imgStrgRef });
+      const roomId = await uploadProfileToDatabase({
+        values,
+        user,
+        imgStrgRef,
+      });
 
       const { updateProfile, getAuth } = await import("firebase/auth");
       const app = (await import("../../firebase/config")).app;
@@ -83,7 +87,14 @@ function CreateProfile() {
       });
 
       // Update the user object stored as global state
-      dispatch(updateUserProfile({ name: values.name, pic: imgStrgRef }));
+      dispatch(
+        updateUserProfile({
+          name: values.name,
+          pic: imgStrgRef,
+          roomId: roomId,
+          major: values.major,
+        })
+      );
     } else {
       alert("Not logged in");
     }
