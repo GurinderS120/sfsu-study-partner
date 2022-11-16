@@ -6,7 +6,26 @@ import {
 } from "../reduxStateManagement/slices/userSlice";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useDispatch } from "react-redux";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
 import { useEffect } from "react";
+
+async function getUserMajorAndRoom(app, uid) {
+  const db = getFirestore(app);
+
+  try {
+    const docRef = doc(db, "users", uid);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const { roomId, major } = docSnap.data();
+      return { roomId: roomId, major: major };
+    } else {
+      return { roomId: null, major: null };
+    }
+  } catch (error) {
+    return { roomId: null, major: null };
+  }
+}
 
 // Layout acts as a wrapper for our entire website, and children represent
 // different pages (we pass in a page one at a time as Layout's child,
@@ -24,9 +43,15 @@ function Layout({ children }) {
     async function setLoggedInUser() {
       const app = (await import("../firebase/config")).app;
       const auth = getAuth(app);
-      onAuthStateChanged(auth, (userAuth) => {
+
+      onAuthStateChanged(auth, async (userAuth) => {
         if (userAuth) {
           // User is logged in, send the user's details to redux, and store the current user in the state
+          const { roomId, major } = await getUserMajorAndRoom(
+            app,
+            userAuth.uid
+          );
+
           dispatch(
             signUserIn({
               user: {
@@ -34,6 +59,8 @@ function Layout({ children }) {
                 email: userAuth.email,
                 name: userAuth.displayName,
                 pic: userAuth.photoURL,
+                roomId: roomId,
+                major: major,
               },
             })
           );
