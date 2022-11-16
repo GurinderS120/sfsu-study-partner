@@ -3,6 +3,7 @@ import Layout from "../components/layout";
 import "../styles/globals.css";
 import { Provider } from "react-redux";
 import store from "../reduxStateManagement/store";
+import { HMSRoomProvider } from "@100mslive/react-sdk";
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -14,9 +15,11 @@ function MyApp({ Component, pageProps }) {
     // So we wrap each page (represented by Component) in the Layout component
     // and in the Layout component we display the page (Component) as its child.
     <Provider store={store}>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      <HMSRoomProvider>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </HMSRoomProvider>
     </Provider>
   );
 }
