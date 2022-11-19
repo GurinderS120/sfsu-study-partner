@@ -7,6 +7,8 @@ import Offcanvas from "react-bootstrap/Offcanvas";
 import { selectUser } from "../reduxStateManagement/slices/userSlice";
 import { useSelector } from "react-redux";
 import { getAuth, signOut } from "firebase/auth";
+import Image from 'next/image'
+import logo from '../public/SFSUSP6.png'
 
 async function logout() {
   const app = (await import("../firebase/config")).app;
@@ -23,7 +25,7 @@ function NavbarG() {
   return (
     <Navbar fixed="top" collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container fluid="md">
-        <Navbar.Brand href="/">Navbar</Navbar.Brand>
+        <Navbar.Brand href="./pages/index.js"><Image src={logo}/></Navbar.Brand>
         <Navbar.Toggle
           className={NavStyles["nav-toggle-btn"]}
           aria-controls="offcanvasNavbar-expand-lg"
