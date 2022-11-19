@@ -35,3 +35,4 @@ component in component folder and the styles for a `page` in the styles folder.
 
 1. Decrease the initial load JS
 2. Avoid setting up `onAuthStateChanged` auth observer on every refresh
+3. Avoid `token is not valid yet` errors when making API calls to 100ms
