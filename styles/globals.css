@@ -15,6 +15,14 @@
     margin-bottom: 2rem;
 }
 
+/* Standard section margins */
+.section {
+    margin-top: 6rem;
+    padding: .7rem;
+    background-color: #e8e9ea;
+    margin-bottom: 5rem;
+}
+
 /* Override react-cropper styles */
 .cropper-view-box, .cropper-drag-box, .cropper-wrap-box, .cropper-container, .cropper-crop-box {
     border-radius: 50%;
