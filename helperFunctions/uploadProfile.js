@@ -29,7 +29,7 @@ async function createRoom(name) {
   const response = await fetch("/api/managementToken");
   const { token } = await response.json();
 
-  //Once we have the management token we can use it to create/retrieve
+  //Once we have the management token we can use it to create
   //user's room
   const roomResponse = await fetch("https://api.100ms.live/v2/rooms", {
     method: "POST",
