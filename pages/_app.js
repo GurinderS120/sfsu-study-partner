@@ -2,10 +2,19 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Layout from "../components/layout";
 import "../styles/globals.css";
 import { Provider } from "react-redux";
+import { useEffect } from "react";
 import store from "../reduxStateManagement/store";
 import { HMSRoomProvider } from "@100mslive/react-sdk";
 
 function MyApp({ Component, pageProps }) {
+  // 100ms logs out a bunch of console statements that's why we need to
+  // do the following to supress them.
+  useEffect(() => {
+    console.info = () => {};
+    console.error = () => {};
+    console.debug = () => {};
+  }, []);
+
   return (
     // Component represents a page and ...pageProps represents the data (if any)
     // we want to pass as props to that page.
