@@ -22,7 +22,7 @@ function NavbarG() {
 
   return (
     <Navbar fixed="top" collapseOnSelect expand="lg" bg="dark" variant="dark">
-      <Container fluid>
+      <Container fluid="md">
         <Navbar.Brand href="/">Navbar</Navbar.Brand>
         <Navbar.Toggle
           className={NavStyles["nav-toggle-btn"]}
@@ -68,13 +68,15 @@ function ProfileDropDown({ user }) {
   return (
     <NavDropdown align="end">
       <NavDropdown.Item eventKey="4.1">
-        <p>{`Welcome, ${user.name ? user.name: user.email}`}</p>
+        <p>{`Welcome, ${user.name ? user.name : user.email}`}</p>
       </NavDropdown.Item>
       <NavDropdown.Divider />
       <NavDropdown.Item eventKey="4.2">Another action</NavDropdown.Item>
       <NavDropdown.Item eventKey="4.3">Something else here</NavDropdown.Item>
       <NavDropdown.Divider />
-      <NavDropdown.Item onClick={logout} eventKey="4.4">Logout</NavDropdown.Item>
+      <NavDropdown.Item onClick={logout} eventKey="4.4">
+        Logout
+      </NavDropdown.Item>
     </NavDropdown>
   );
 }
