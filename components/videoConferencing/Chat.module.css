@@ -1,0 +1,9 @@
+/* For chat input field without any outline */
+.no-outline:focus {
+    outline: none !important;
+}
+
+.chat {
+    max-width: 18rem;
+    margin-top: 2.3rem;
+}

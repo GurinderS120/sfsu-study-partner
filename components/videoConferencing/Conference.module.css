@@ -1,0 +1,17 @@
+ /* Hide scrollbar for Chrome, Safari and Opera */
+ .participants::-webkit-scrollbar {
+     display: none;
+ }
+
+ /* Hide scrollbar for IE, Edge and Firefox */
+ .participants {
+     -ms-overflow-style: none;
+     /* IE and Edge */
+     scrollbar-width: none;
+     /* Firefox */
+     height: 410px;
+ }
+
+ .chevron-icon {
+     width: 100%;
+ }
