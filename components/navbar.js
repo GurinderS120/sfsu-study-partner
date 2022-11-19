@@ -25,7 +25,7 @@ function NavbarG() {
   return (
     <Navbar fixed="top" collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container fluid="md">
-        <Navbar.Brand href="./pages/index.js"><Image src={logo}/></Navbar.Brand>
+        <Navbar.Brand href="./pages/index.js"><Image src={logo} height={35} width={100}/></Navbar.Brand>
         <Navbar.Toggle
           className={NavStyles["nav-toggle-btn"]}
           aria-controls="offcanvasNavbar-expand-lg"
