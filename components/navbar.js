@@ -8,7 +8,7 @@ import { selectUser } from "../reduxStateManagement/slices/userSlice";
 import { useSelector } from "react-redux";
 import { getAuth, signOut } from "firebase/auth";
 import Image from 'next/image'
-import logo from '../public/SFSUSP6.png'
+import logo from '../public/SFSUSP4.png'
 
 async function logout() {
   const app = (await import("../firebase/config")).app;
