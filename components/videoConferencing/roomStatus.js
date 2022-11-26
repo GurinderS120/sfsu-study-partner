@@ -16,7 +16,7 @@ function RoomStatus() {
         <Card.Title className="mb-4">Room Status</Card.Title>
         <Container>
           <div className="d-flex flex-column">
-            <label className="mb-2">
+            <label className="mt-2 mb-2">
               <span style={{ width: "4rem", display: "inline-block" }}>
                 Private
               </span>
@@ -40,7 +40,7 @@ function RoomStatus() {
                 onChange={handleChange}
               />
             </label>
-            <Button style={{ marginTop: "3.8rem" }} variant="primary">
+            <Button style={{ marginTop: "3.6rem" }} variant="primary">
               Invite
             </Button>
           </div>
