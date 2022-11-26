@@ -78,3 +78,46 @@ export const profileSchema = yup.object().shape({
       "Please remove spaces from the beginning and end"
     ),
 });
+
+export const onlineSchema = yup.object().shape({
+  email: yup
+    .string()
+    .matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Please provide valid email")
+    .matches(
+      /^[\S]+(\s+[\S]+)*$/,
+      "Please remove spaces from the beginning and end"
+    )
+    .required("Required"),
+});
+
+export const inPersonSchema = yup.object().shape({
+  email: yup
+    .string()
+    .matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Please provide valid email")
+    .matches(
+      /^[\S]+(\s+[\S]+)*$/,
+      "Please remove spaces from the beginning and end"
+    )
+    .required("Required"),
+  location: yup
+    .string()
+    .min(2, "Location must be at least 2 characters long")
+    .max(100, "Please enter a shorter version of location")
+    .matches(
+      /^[\S]+(\s+[\S]+)*$/,
+      "Please remove spaces from the beginning and end"
+    )
+    .required("Required"),
+});
+
+export const meetingSchema = yup.object().shape({
+  description: yup
+    .string()
+    .min(2, "Description must be at least 2 characters long")
+    .max(100, "Please try to be brief")
+    .matches(
+      /^[\S]+(\s+[\S]+)*$/,
+      "Please remove spaces from the beginning and end"
+    )
+    .required("Required"),
+});
