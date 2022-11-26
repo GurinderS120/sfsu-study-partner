@@ -1,4 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
+import "react-calendar/dist/Calendar.css";
+import "react-time-picker/dist/TimePicker.css";
+import "react-clock/dist/Clock.css";
 import Layout from "../components/layout";
 import "../styles/globals.css";
 import { Provider } from "react-redux";
