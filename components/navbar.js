@@ -67,13 +67,18 @@ function NavbarG() {
 function ProfileDropDown({ user }) {
   return (
     <NavDropdown align="end">
-      <NavDropdown.Item eventKey="4.1">
-        <p>{`Welcome, ${user.name ? user.name : user.email}`}</p>
+      <NavDropdown.Item eventKey="4.1" className="calendar-border bg-light">
+        {`Welcome, ${user.name ? user.name : user.email}`}
       </NavDropdown.Item>
-      <NavDropdown.Divider />
-      <NavDropdown.Item eventKey="4.2">Another action</NavDropdown.Item>
-      <NavDropdown.Item eventKey="4.3">Something else here</NavDropdown.Item>
-      <NavDropdown.Divider />
+      <NavDropdown.Divider className="mb-1" />
+      <NavDropdown.Item href="/app/meetings">
+        Schedule a meeting
+      </NavDropdown.Item>
+      <NavDropdown.Divider className="mb-1" />
+      <NavDropdown.Item href={`/app/studyRoom/${user.roomId}`}>
+        Study room
+      </NavDropdown.Item>
+      <NavDropdown.Divider className="mb-1" />
       <NavDropdown.Item onClick={logout} eventKey="4.4">
         Logout
       </NavDropdown.Item>
