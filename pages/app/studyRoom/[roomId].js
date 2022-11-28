@@ -77,7 +77,7 @@ function StudyRoom() {
     console.log(roomId);
 
     if (!user) {
-      console.log("user is not signed in");
+      router.push("/login");
     }
   }, [router, user]);
 

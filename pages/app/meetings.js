@@ -77,6 +77,12 @@ function Meetings() {
     }
   }, [user?.uid]);
 
+  useEffect(() => {
+    if (!user) {
+      router.push("/login");
+    }
+  }, [router, user]);
+
   const clickedDay = useCallback((date, event) => {
     setDate(date);
     setModal(true);

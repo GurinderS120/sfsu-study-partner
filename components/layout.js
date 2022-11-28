@@ -9,6 +9,8 @@ import { useDispatch } from "react-redux";
 import { doc, getDoc, getFirestore } from "firebase/firestore";
 import { useEffect } from "react";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import { useState } from "react";
+import Spinner from "react-bootstrap/Spinner";
 
 async function getUserMajorAndRoom(app, uid) {
   const db = getFirestore(app);
@@ -48,6 +50,7 @@ async function downloadPic(pic) {
 function Layout({ children }) {
   // To dispatch an action
   const dispatch = useDispatch();
+  const [stateResolved, setStateResolved] = useState(false);
 
   useEffect(() => {
     // The following function gets called when our website gets loaded
@@ -81,16 +84,19 @@ function Layout({ children }) {
               },
             })
           );
+
+          setStateResolved(true);
         } else {
           dispatch(signUserOut());
+          setStateResolved(true);
         }
       });
     }
 
     setLoggedInUser();
-  }, []);
+  }, [dispatch]);
 
-  return (
+  return stateResolved ? (
     <>
       <Head>
         <title>Create Next App</title>
@@ -100,6 +106,12 @@ function Layout({ children }) {
       <Navbar />
       <main className="mt-5">{children}</main>
     </>
+  ) : (
+    <div className="vh-100 d-flex justify-content-center align-items-center">
+      <Spinner animation="border" role="status" size="lg">
+        <span className="visually-hidden">Loading...</span>
+      </Spinner>
+    </div>
   );
 }
 

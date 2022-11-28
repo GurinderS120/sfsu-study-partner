@@ -12,7 +12,9 @@ import { useDispatch } from "react-redux";
 import { AiOutlinePlus } from "react-icons/ai";
 import { BiPencil } from "react-icons/bi";
 import Image from "next/image";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/router";
+import Spinner from "react-bootstrap/Spinner";
 
 // This function is responsible for compressing and converting file into
 // base64 encoded string which can be used as a url in src attribute of
@@ -49,10 +51,17 @@ function handleAddImage(fileRef) {
 
 function CreateProfile() {
   const user = useSelector(selectUser);
+  const router = useRouter();
   const dispatch = useDispatch();
   const [img, setImg] = useState(null);
   const [modal, setModal] = useState(false);
   const fileRef = useRef(null);
+
+  useEffect(() => {
+    if (!user) {
+      router.push("/login");
+    }
+  }, [router, user]);
 
   // We need to use a helper function because you can only use "UseSelector()"
   // in a react-component function. Moreover, "values" are passed by Formik so
@@ -100,7 +109,7 @@ function CreateProfile() {
     }
   }
 
-  return (
+  return user ? (
     <Formik
       initialValues={{ pic: "", name: "", major: "" }}
       onSubmit={submitHandler}
@@ -202,6 +211,12 @@ function CreateProfile() {
         </div>
       )}
     </Formik>
+  ) : (
+    <div className="vh-100 d-flex justify-content-center align-items-center">
+      <Spinner animation="border" role="status" size="lg">
+        <span className="visually-hidden">Loading...</span>
+      </Spinner>
+    </div>
   );
 }
 
