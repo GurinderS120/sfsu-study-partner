@@ -148,13 +148,13 @@ function Meetings() {
 
   // Save contents to database
   const saveContents = useCallback(
-    async (invitation) => {
+    async (updatedContents) => {
       setUnsavedChanges(false);
       try {
         const app = (await import("../../firebase/config")).app;
         const db = getFirestore(app);
-        // const data = Object.fromEntries(updatedContents);
-        await setDoc(doc(db, "calendar", user.uid), invitation);
+        const data = Object.fromEntries(updatedContents);
+        await setDoc(doc(db, "calendar", user.uid), data);
       } catch (error) {}
     },
     [user?.uid]
