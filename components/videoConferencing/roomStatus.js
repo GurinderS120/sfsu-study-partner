@@ -160,7 +160,7 @@ function RoomStatus({
                         className="text-danger small mb-0"
                       />
 
-                      <p className="mt-2 mb-2">Invitation is valid from:</p>
+                      <p className="mt-2 mb-2">Invitation time:</p>
                       <Col className="mb-4">
                         <span>
                           <TimePicker

@@ -40,6 +40,7 @@ function StudyRoom() {
   const [reviewInvitation, setReviewInvitation] = useState(false);
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState("false");
+  const [guestUser, setGuestUser] = useState(false);
   const router = useRouter();
   // const hmsActions = useHMSActions();
 
@@ -72,15 +73,6 @@ function StudyRoom() {
   //   };
   // }, [hmsActions, isConnected]);
 
-  useEffect(() => {
-    const { roomId } = router.query;
-    console.log(roomId);
-
-    if (!user) {
-      router.push("/login");
-    }
-  }, [router, user]);
-
   // Fetch calendar contents from database
   useEffect(() => {
     async function getCalendarContent() {
@@ -105,6 +97,15 @@ function StudyRoom() {
       getCalendarContent();
     }
   }, [user?.uid]);
+
+  useEffect(() => {
+    const { roomId } = router.query;
+    console.log(roomId);
+
+    if (!user) {
+      setGuestUser(true);
+    }
+  }, [router, user]);
 
   const saveContents = useCallback(
     async (invitation) => {
@@ -134,7 +135,7 @@ function StudyRoom() {
     });
   };
 
-  return isConnected && user && show ? (
+  return isConnected && (user || guestUser) && show ? (
     <>
       {isAlert && (
         <CustomAlert
@@ -151,31 +152,35 @@ function StudyRoom() {
       >
         <Conference setIsAlert={setIsAlert} setMessage={setMessage} />
 
-        <RoomStatus
-          date={date}
-          contents={contents}
-          content={contents.get(date.toDateString())}
-          handleDayContent={handleDayContent}
-          invitees={invitees}
-          setInvitees={setInvitees}
-          setReviewInvitation={setReviewInvitation}
-        />
-        {reviewInvitation && (
-          <ReviewInvitation
-            date={date}
-            reviewInvitation={reviewInvitation}
-            setReviewInvitation={setReviewInvitation}
-            invitees={invitees}
-            setInvitees={setInvitees}
-            content={contents.get(date.toDateString())}
-            user={user}
-            contents={contents}
-            setMessage={setMessage}
-            setVariant={setVariant}
-            setIsAlert={setIsAlert}
-            handleDayContent={handleDayContent}
-            saveContents={saveContents}
-          />
+        {!guestUser && (
+          <>
+            <RoomStatus
+              date={date}
+              contents={contents}
+              content={contents.get(date.toDateString())}
+              handleDayContent={handleDayContent}
+              invitees={invitees}
+              setInvitees={setInvitees}
+              setReviewInvitation={setReviewInvitation}
+            />
+            {reviewInvitation && (
+              <ReviewInvitation
+                date={date}
+                reviewInvitation={reviewInvitation}
+                setReviewInvitation={setReviewInvitation}
+                invitees={invitees}
+                setInvitees={setInvitees}
+                content={contents.get(date.toDateString())}
+                user={user}
+                contents={contents}
+                setMessage={setMessage}
+                setVariant={setVariant}
+                setIsAlert={setIsAlert}
+                handleDayContent={handleDayContent}
+                saveContents={saveContents}
+              />
+            )}
+          </>
         )}
       </Container>
     </>
@@ -218,7 +223,7 @@ function ReviewInvitation({
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        message: `Hi, your friend ${user.name} invited you to join them in a meeting held at their online study room at sfsu-study-partner website. Please review the details below: Invitation is valid from: ${content.startTime} to ${content.endTime} \nLink: http://localhost:3000/app/studyRoom/${user.roomId}\n
+        message: `Hi, your friend ${user.name} invited you to join them in a meeting held at their online study room at sfsu-study-partner website. Please review the details below: Invitation time: ${content.startTime} to ${content.endTime} \nLink: http://localhost:3000/app/studyRoom/${user.roomId}\n
         Thanks, \n sfsu-study-partner team`,
 
         to: invitees,
@@ -274,7 +279,7 @@ function ReviewInvitation({
         <Container style={{ maxHeight: "25rem", overflowY: "auto" }}>
           <Row>
             <Col>
-              <p className="mt-1 mb-2">Invitation is valid from:</p>
+              <p className="mt-1 mb-2">Invitation time:</p>
               <div className="ps-2 bg-light">
                 <span>{content.startTime}</span>
                 <span className="mx-2">to</span>
