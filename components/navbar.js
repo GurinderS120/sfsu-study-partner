@@ -28,7 +28,7 @@ function NavbarG() {
     <Navbar fixed="top" collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container fluid="md">
         <Navbar.Brand href="./pages/index.js">
-          <Image src={logo} alt="Logo" height={35} width={100} />
+          <Image src={logo} height={35} width={100} />
         </Navbar.Brand>
         <Navbar.Toggle
           className={NavStyles["nav-toggle-btn"]}
