@@ -816,7 +816,7 @@ function DateContent({
                   </span>
                 </Col>
               </Row>
-              {prevContents && (
+              {mode && (
                 <Row className="mt-2">
                   <Col>
                     <p className="mt-2 mb-1">Mode:</p>
