@@ -1,5 +1,7 @@
 import NavStyles from "./Navbar.module.css";
 import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
@@ -7,6 +9,7 @@ import Offcanvas from "react-bootstrap/Offcanvas";
 import { selectUser } from "../reduxStateManagement/slices/userSlice";
 import { useSelector } from "react-redux";
 import { getAuth, signOut } from "firebase/auth";
+import Image from "next/image";
 
 async function logout() {
   const app = (await import("../firebase/config")).app;
@@ -66,23 +69,38 @@ function NavbarG() {
 
 function ProfileDropDown({ user }) {
   return (
-    <NavDropdown align="end">
-      <NavDropdown.Item eventKey="4.1" className="calendar-border bg-light">
-        {`Welcome, ${user.name ? user.name : user.email}`}
-      </NavDropdown.Item>
-      <NavDropdown.Divider className="mb-1" />
-      <NavDropdown.Item href="/app/meetings">
-        Schedule a meeting
-      </NavDropdown.Item>
-      <NavDropdown.Divider className="mb-1" />
-      <NavDropdown.Item href={`/app/studyRoom/${user.roomId}`}>
-        Study room
-      </NavDropdown.Item>
-      <NavDropdown.Divider className="mb-1" />
-      <NavDropdown.Item onClick={logout} eventKey="4.4">
-        Logout
-      </NavDropdown.Item>
-    </NavDropdown>
+    <Row className="justify-content-start align-items-lg-center">
+      {user.pic && (
+        <Col xs={2} lg={5} className="pe-1 pe-lg-0">
+          <Image
+            src={user.pic}
+            alt="User pic"
+            className="rounded-circle"
+            width="65%"
+            height="65%"
+          />
+        </Col>
+      )}
+      <Col xs="auto" className="ps-0 ps-md-2">
+        <NavDropdown align="end">
+          <NavDropdown.Item eventKey="4.1" className="calendar-border bg-light">
+            {`Welcome, ${user.name ? user.name : user.email}`}
+          </NavDropdown.Item>
+          <NavDropdown.Divider className="mb-1" />
+          <NavDropdown.Item href="/app/meetings">
+            Schedule a meeting
+          </NavDropdown.Item>
+          <NavDropdown.Divider className="mb-1" />
+          <NavDropdown.Item href={`/app/studyRoom/${user.roomId}`}>
+            Study room
+          </NavDropdown.Item>
+          <NavDropdown.Divider className="mb-1" />
+          <NavDropdown.Item onClick={logout} eventKey="4.4">
+            Logout
+          </NavDropdown.Item>
+        </NavDropdown>
+      </Col>
+    </Row>
   );
 }
 

@@ -8,6 +8,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useDispatch } from "react-redux";
 import { doc, getDoc, getFirestore } from "firebase/firestore";
 import { useEffect } from "react";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 async function getUserMajorAndRoom(app, uid) {
   const db = getFirestore(app);
@@ -24,6 +25,20 @@ async function getUserMajorAndRoom(app, uid) {
     }
   } catch (error) {
     return { roomId: null, major: null };
+  }
+}
+
+async function downloadPic(pic) {
+  const storage = getStorage();
+  try {
+    const url = await getDownloadURL(ref(storage, pic));
+    if (url) {
+      return url;
+    } else {
+      return null;
+    }
+  } catch (err) {
+    return null;
   }
 }
 
@@ -52,13 +67,15 @@ function Layout({ children }) {
             userAuth.uid
           );
 
+          const url = await downloadPic(userAuth.photoURL);
+
           dispatch(
             signUserIn({
               user: {
                 uid: userAuth.uid,
                 email: userAuth.email,
                 name: userAuth.displayName,
-                pic: userAuth.photoURL,
+                pic: url,
                 roomId: roomId,
                 major: major,
               },
