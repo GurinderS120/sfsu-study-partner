@@ -108,10 +108,18 @@ function Meetings() {
         const dateString = date.toDateString();
 
         if (contents.has(dateString)) {
+          const content = contents.get(dateString);
           const popover = (
             <Popover id="popover-basic">
               <Popover.Header as="h3">Meeting details</Popover.Header>
-              <Popover.Body>{contents.get(dateString).content}</Popover.Body>
+              <Popover.Body>
+                <p>{content.content}</p>
+                <div>
+                  <span>{content.startTime}</span>
+                  <span className="mx-2">to</span>
+                  <span>{content.endTime}</span>
+                </div>
+              </Popover.Body>
             </Popover>
           );
 
@@ -155,7 +163,7 @@ function Meetings() {
         const dateString = date.toDateString();
 
         if (contents.has(dateString)) {
-          return "bg-light calendar-border text-success";
+          return "bg-light border border-1 calendar-border text-success";
         }
       }
     },
@@ -264,6 +272,7 @@ function ReviewInvitation({
   contents,
   setResponse,
   setAlert,
+  handleDayContent,
   saveContents,
 }) {
   const handleClose = () => setReviewInvitation(false);
@@ -320,6 +329,15 @@ function ReviewInvitation({
     });
 
     saveContents(updatedContents);
+
+    handleDayContent(date.toDateString(), {
+      content: content.content,
+      startTime: content.startTime,
+      endTime: content.endTime,
+      mode: mode,
+      location: location ? location : null,
+      invitees: invitees,
+    });
 
     setAlert(true);
     handleClose();
@@ -441,7 +459,7 @@ function MeetingLocation({
   }
 
   function submitModeInfo(values) {
-    const id = Math.floor(Math.random() * 10) + 1;
+    const id = Math.floor(Math.random() * 10000) + 1;
 
     if (mode === "Online") {
       setMode("Online");
@@ -637,6 +655,22 @@ function DateContent({
         })
   );
 
+  const [mode, setMode] = useState(prevContents ? prevContents.mode : "");
+
+  const [location, setLocation] = useState(
+    prevContents && prevContents.location ? prevContents.location : ""
+  );
+
+  const [invitees, setInvitees] = useState(
+    prevContents ? prevContents.invitees : ""
+  );
+
+  const removeInvitee = (id) => {
+    setInvitees((invitees) => {
+      return invitees.filter((invitee) => invitee.id !== id);
+    });
+  };
+
   function handleContent(values) {
     const newTime = new Date(
       `${date.toLocaleDateString()} ${time}`
@@ -658,21 +692,34 @@ function DateContent({
       if (
         prevContents.content !== values.description ||
         newTime !== prevContents.startTime ||
-        newEndTime !== prevContents.endTime
+        newEndTime !== prevContents.endTime ||
+        mode !== prevContents.mode ||
+        location !== prevContents.location ||
+        invitees.length !== prevContents.invitees.length
       ) {
         const updatedContents = new Map(contents);
-        updatedContents.set(date.toDateString(), {
+        const data = {
           content: values.description,
           startTime: newTime,
           endTime: newEndTime,
-        });
+        };
+
+        if (mode !== "") {
+          data.mode = mode;
+        }
+
+        if (location !== "") {
+          data.location = location;
+        }
+
+        if (invitees !== "") {
+          data.invitees = invitees;
+        }
+
+        updatedContents.set(date.toDateString(), data);
         saveContents(updatedContents);
 
-        onContentChange(date.toDateString(), {
-          content: values.description,
-          startTime: newTime,
-          endTime: newEndTime,
-        });
+        onContentChange(date.toDateString(), data);
       }
     } else {
       const updatedContents = new Map(contents);
@@ -729,7 +776,7 @@ function DateContent({
             <Modal.Body>
               <Row>
                 <Col>
-                  <p className="mt-2 mb-2">Meeting description</p>
+                  <p className="mt-2 mb-2">Meeting description:</p>
                   <div style={{ maxWidth: "18rem" }}>
                     <InputField
                       type="text"
@@ -747,7 +794,7 @@ function DateContent({
 
               <Row className="mt-2">
                 <Col>
-                  <p className="mt-2 mb-2">Pick a meeting time</p>
+                  <p className="mt-2 mb-2">Pick a meeting time:</p>
                   <span>
                     <TimePicker
                       onChange={setTime}
@@ -769,16 +816,53 @@ function DateContent({
                   </span>
                 </Col>
               </Row>
-              {prevContents && prevContents.mode && (
-                <Row>
+              {prevContents && (
+                <Row className="mt-2">
                   <Col>
-                    <p>{prevContents.mode}</p>
+                    <p className="mt-2 mb-1">Mode:</p>
+                    <select
+                      value={mode}
+                      onChange={(e) => setMode(e.target.value)}
+                      className="form-select"
+                      style={{ maxWidth: "18rem" }}
+                    >
+                      <option value="Online">Online</option>
+                      <option value="In-person">In-person</option>
+                    </select>
                   </Col>
                 </Row>
               )}
-              <Row>
-                <Col></Col>
-              </Row>
+              {location && mode === "In-person" && (
+                <Row className="mt-2">
+                  <Col>
+                    <p className="mt-2 mb-1">Location:</p>
+                    <input
+                      type="text"
+                      value={location}
+                      onChnage={(e) => setLocation(e.target.value)}
+                    />
+                  </Col>
+                </Row>
+              )}
+              {invitees && (
+                <Row>
+                  <Col>
+                    <p className="mt-2 mb-1">Invited:</p>
+                    {invitees.map((invitee) => (
+                      <div
+                        className="px-sm-2 bg-light d-flex justify-content-between align-items-center mb-3 flex-wrap w-auto overflow-scroll"
+                        key={invitee.id}
+                      >
+                        <span>{invitee.email}</span>
+                        <IoMdClose
+                          type="button"
+                          onClick={() => removeInvitee(invitee.id)}
+                        />
+                      </div>
+                    ))}
+                  </Col>
+                </Row>
+              )}
             </Modal.Body>
             <Modal.Footer>
               {prevContents ? (
