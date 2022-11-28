@@ -142,13 +142,13 @@ function Meetings() {
 
   // Save contents to database
   const saveContents = useCallback(
-    async (updatedContents) => {
+    async (invitation) => {
       setUnsavedChanges(false);
       try {
         const app = (await import("../../firebase/config")).app;
         const db = getFirestore(app);
-        const data = Object.fromEntries(updatedContents);
-        await setDoc(doc(db, "calendar", user.uid), data);
+        // const data = Object.fromEntries(updatedContents);
+        await setDoc(doc(db, "calendar", user.uid), invitation);
       } catch (error) {}
     },
     [user?.uid]
@@ -178,7 +178,7 @@ function Meetings() {
           message={
             response === "successful"
               ? "Your invitation was sent successfully"
-              : "Something went wrong, please try again later"
+              : "Your invitation wasn't sent, please try again later"
           }
           setIsAlert={setIsAlert}
         />
@@ -228,15 +228,6 @@ function Meetings() {
             onClickDay={clickedDay}
           />
         </Row>
-        {/* {unsavedChanges && (
-        <Row className="mt-3 justify-content-center">
-          <Col md="2">
-            <Button variant="primary" onClick={saveContents}>
-              Save new changes
-            </Button>
-          </Col>
-        </Row>
-      )} */}
         <Row>
           <MeetingLocation
             content={contents.get(date.toDateString())}
@@ -314,30 +305,29 @@ function ReviewInvitation({
 
     if (response.status === 200) {
       setResponse("successful");
+      const updatedContents = new Map(contents);
+      updatedContents.set(date.toDateString(), {
+        content: content.content,
+        startTime: content.startTime,
+        endTime: content.endTime,
+        mode: mode,
+        location: location ? location : null,
+        invitees: invitees,
+      });
+
+      saveContents(updatedContents);
+
+      handleDayContent(date.toDateString(), {
+        content: content.content,
+        startTime: content.startTime,
+        endTime: content.endTime,
+        mode: mode,
+        location: location ? location : null,
+        invitees: invitees,
+      });
     } else {
       setResponse("failed");
     }
-
-    const updatedContents = new Map(contents);
-    updatedContents.set(date.toDateString(), {
-      content: content.content,
-      startTime: content.startTime,
-      endTime: content.endTime,
-      mode: mode,
-      location: location ? location : null,
-      invitees: invitees,
-    });
-
-    saveContents(updatedContents);
-
-    handleDayContent(date.toDateString(), {
-      content: content.content,
-      startTime: content.startTime,
-      endTime: content.endTime,
-      mode: mode,
-      location: location ? location : null,
-      invitees: invitees,
-    });
 
     setAlert(true);
     handleClose();
@@ -499,6 +489,7 @@ function MeetingLocation({
           >
             <Card.Body>
               <Card.Title className="mb-4">Invite a friend</Card.Title>
+              <hr />
               <Container>
                 {!content ? (
                   <p className="mb-1 mt-2 text-danger">
