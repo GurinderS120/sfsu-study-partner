@@ -146,7 +146,7 @@ function StudyRoom() {
       )}
       <Container
         fluid="md"
-        className={`section shadow-sm p-3 mb-5 rounded ${
+        className={`section shadow-sm p-0 p-md-3 mb-5 rounded ${
           message && isAlert ? "mt-0" : ""
         }`}
       >

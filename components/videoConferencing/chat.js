@@ -27,7 +27,7 @@ function Chat({ setChat }) {
   }
 
   return (
-    <Card className={`${chatStyles["chat"]} bg-dark bg-gradient`}>
+    <Card className={`${chatStyles["chat"]} bg-dark bg-gradient ms-4 ms-lg-0`}>
       <Card.Body>
         <Card.Title className="text-light">
           <Container>

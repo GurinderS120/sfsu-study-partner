@@ -60,11 +60,11 @@ function Conference({ setIsAlert, setMessage }) {
           />
         </Col>
 
-        <Col xs md="auto" lg="6">
+        <Col xs="auto" sm={6} lg={6}>
           <MidScreen localPeer={localPeer} />
         </Col>
 
-        <Col xs md="auto" lg="3">
+        <Col xs="auto" lg={3}>
           {chat && <Chat chat={chat} setChat={setChat} />}
         </Col>
       </Row>
