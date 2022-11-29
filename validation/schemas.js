@@ -121,3 +121,15 @@ export const meetingSchema = yup.object().shape({
     )
     .required("Required"),
 });
+
+export const studyRoomSchema = yup.object().shape({
+  name: yup
+    .string()
+    .min(1, "Name must be at least 1 character long")
+    .max(100, "Please enter a nickname")
+    .matches(
+      /^[\S]+(\s+[\S]+)*$/,
+      "Please remove spaces from the beginning and end"
+    )
+    .required("Required"),
+});

@@ -10,7 +10,7 @@ export default function handler(req, res) {
       access_key: app_access_key,
       room_id: req.body.roomId,
       user_id: req.body.userId,
-      role: "host",
+      role: req.body.role,
       type: "app",
       version: 2,
       iat: Math.floor(Date.now() / 1000) - 2,

@@ -5,25 +5,25 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { AiOutlineSend } from "react-icons/ai";
 import { IoMdClose } from "react-icons/io";
-// import {
-//   useHMSActions,
-//   useHMSStore,
-//   selectHMSMessages,
-// } from "@100mslive/react-sdk";
+import {
+  useHMSActions,
+  useHMSStore,
+  selectHMSMessages,
+} from "@100mslive/react-sdk";
 import { useState } from "react";
 
 function Chat({ setChat }) {
   const [message, setMessage] = useState("");
-  // const allMessages = useHMSStore(selectHMSMessages);
-  // const hmsActions = useHMSActions();
+  const allMessages = useHMSStore(selectHMSMessages);
+  const hmsActions = useHMSActions();
 
-  const allMessages = [{ message: "Dummy message", senderName: "You", id: 1 }];
+  // const allMessages = [{ message: "Dummy message", senderName: "You", id: 1 }];
 
   const handleClose = () => setChat(false);
 
   function sendMessage() {
     setMessage("");
-    // hmsActions.sendBroadcastMessage(message);
+    hmsActions.sendBroadcastMessage(message);
   }
 
   return (

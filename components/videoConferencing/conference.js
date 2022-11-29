@@ -1,8 +1,8 @@
-// import {
-//   selectPeers,
-//   useHMSStore,
-//   selectLocalPeer,
-// } from "@100mslive/react-sdk";
+import {
+  selectPeers,
+  useHMSStore,
+  selectLocalPeer,
+} from "@100mslive/react-sdk";
 import React from "react";
 import Peer from "./peer";
 import Row from "react-bootstrap/Row";
@@ -17,17 +17,17 @@ import { useRef } from "react";
 
 function Conference({ setIsAlert, setMessage }) {
   const peersRef = useRef(null);
-  // const peers = useHMSStore(selectPeers);
-  // const localPeer = useHMSStore(selectLocalPeer);
+  const peers = useHMSStore(selectPeers);
+  const localPeer = useHMSStore(selectLocalPeer);
   const [chat, setChat] = useState(true);
-  const localPeer = "dummy text";
-  const peers = [
-    { id: 1, name: "Ahmed" },
-    { id: 2, name: "Donnovan" },
-    { id: 3, name: "Gurinder" },
-    { id: 4, name: "Hira" },
-    { id: 5, name: "Tung" },
-  ];
+  // const localPeer = "dummy text";
+  // const peers = [
+  //   { id: 1, name: "Ahmed" },
+  //   { id: 2, name: "Donnovan" },
+  //   { id: 3, name: "Gurinder" },
+  //   { id: 4, name: "Hira" },
+  //   { id: 5, name: "Tung" },
+  // ];
 
   return (
     <div className="bg-dark">
