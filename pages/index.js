@@ -24,8 +24,11 @@ function Home() {
         productRef.current.scrollIntoView({ behavior: "smooth" });
         break;
 
-      default:
+      case "contact":
         contactRef.current.scrollIntoView({ behavior: "smooth" });
+        break;
+
+      default:
         break;
     }
   }, [router]);
