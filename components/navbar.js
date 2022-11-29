@@ -27,8 +27,8 @@ function NavbarG() {
   return (
     <Navbar fixed="top" collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container fluid="md">
-        <Navbar.Brand href="./pages/index.js">
-          <Image src={logo} height={35} width={100} />
+        <Navbar.Brand href="/">
+          <Image src={logo} alt="Logo" height={35} width={100} />
         </Navbar.Brand>
         <Navbar.Toggle
           className={NavStyles["nav-toggle-btn"]}
@@ -41,18 +41,22 @@ function NavbarG() {
         >
           <Offcanvas.Header closeButton>
             <Offcanvas.Title id="offcanvasNavbarLabel-expand-lg">
-              Navbar
+              <Nav>
+                <Nav.Link href="/">
+                  <Image src={logo} alt="Logo" height={35} width={100} />
+                </Nav.Link>
+              </Nav>
             </Offcanvas.Title>
           </Offcanvas.Header>
           <Offcanvas.Body>
             <Nav className="mx-auto">
-              <Nav.Link className="px-lg-4" href="/about">
+              <Nav.Link className="px-lg-4" href="/#about">
                 About
               </Nav.Link>
-              <Nav.Link className="px-lg-4" href="/product">
+              <Nav.Link className="px-lg-4" href="/#product">
                 Product
               </Nav.Link>
-              <Nav.Link className="px-lg-4" href="/contact">
+              <Nav.Link className="px-lg-4" href="/#contact">
                 Contact
               </Nav.Link>
             </Nav>
