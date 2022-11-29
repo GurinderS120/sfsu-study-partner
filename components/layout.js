@@ -1,5 +1,6 @@
 import Head from "next/head";
 import Navbar from "./navbar";
+import Footer from "./footer"
 
 // Layout acts as a wrapper for our entire website, and children represent
 // different pages (we pass in a page one at a time as Layout's child,
@@ -14,6 +15,7 @@ function Layout({ children }) {
       </Head>
       <Navbar />
       <main>{children}</main>
+      <Footer />
     </>
   );
 }
