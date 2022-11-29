@@ -3,7 +3,7 @@
     height: 100vh;
     width: 90%;
     max-width: 20rem;
-    margin-top: 8rem;
+    margin-top: 13rem;
     margin-left: auto;
     margin-right: auto;
 }
@@ -13,4 +13,26 @@
     text-align: center;
     font-weight: bold;
     margin-bottom: 2rem;
+}
+
+/* Standard section margins */
+.section {
+    margin-top: 6rem;
+    background-color: #eceff2;
+    margin-bottom: 5rem;
+}
+
+/* Override react-cropper styles */
+.cropper-view-box, .cropper-drag-box, .cropper-wrap-box, .cropper-container, .cropper-crop-box {
+    border-radius: 50%;
+}
+
+/* Override react-calendar styles */
+.react-calendar {
+    width: 100%;
+    height: 100%;
+}
+
+.calendar-border {
+    border-left: 5px solid #F61067 !important;
 }

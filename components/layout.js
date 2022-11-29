@@ -1,11 +1,102 @@
 import Head from "next/head";
 import Navbar from "./navbar";
+import {
+  signUserIn,
+  signUserOut,
+} from "../reduxStateManagement/slices/userSlice";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useDispatch } from "react-redux";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
+import { useEffect } from "react";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import { useState } from "react";
+import Spinner from "react-bootstrap/Spinner";
+
+async function getUserMajorAndRoom(app, uid) {
+  const db = getFirestore(app);
+
+  try {
+    const docRef = doc(db, "users", uid);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const { roomId, major } = docSnap.data();
+      return { roomId: roomId, major: major };
+    } else {
+      return { roomId: null, major: null };
+    }
+  } catch (error) {
+    return { roomId: null, major: null };
+  }
+}
+
+async function downloadPic(pic) {
+  const storage = getStorage();
+  try {
+    const url = await getDownloadURL(ref(storage, pic));
+    if (url) {
+      return url;
+    } else {
+      return null;
+    }
+  } catch (err) {
+    return null;
+  }
+}
 
 // Layout acts as a wrapper for our entire website, and children represent
 // different pages (we pass in a page one at a time as Layout's child,
 // take a look at _app.js file)
 function Layout({ children }) {
-  return (
+  // To dispatch an action
+  const dispatch = useDispatch();
+  const [stateResolved, setStateResolved] = useState(false);
+
+  useEffect(() => {
+    // The following function gets called when our website gets loaded
+    // initially. Its responsibility is to get logged in user from the
+    // Firebase. Additionally we also attach a listner to the Auth
+    // state that helps to update the global user state (object) whenever
+    // a user logs in or logs out.
+    async function setLoggedInUser() {
+      const app = (await import("../firebase/config")).app;
+      const auth = getAuth(app);
+
+      onAuthStateChanged(auth, async (userAuth) => {
+        if (userAuth) {
+          // User is logged in, send the user's details to redux, and store the current user in the state
+          const { roomId, major } = await getUserMajorAndRoom(
+            app,
+            userAuth.uid
+          );
+
+          const url = await downloadPic(userAuth.photoURL);
+
+          dispatch(
+            signUserIn({
+              user: {
+                uid: userAuth.uid,
+                email: userAuth.email,
+                name: userAuth.displayName,
+                pic: url,
+                roomId: roomId,
+                major: major,
+              },
+            })
+          );
+
+          setStateResolved(true);
+        } else {
+          dispatch(signUserOut());
+          setStateResolved(true);
+        }
+      });
+    }
+
+    setLoggedInUser();
+  }, [dispatch]);
+
+  return stateResolved ? (
     <>
       <Head>
         <title>Create Next App</title>
@@ -13,8 +104,14 @@ function Layout({ children }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar />
-      <main>{children}</main>
+      <main className="mt-5">{children}</main>
     </>
+  ) : (
+    <div className="vh-100 d-flex justify-content-center align-items-center">
+      <Spinner animation="border" role="status" size="lg">
+        <span className="visually-hidden">Loading...</span>
+      </Spinner>
+    </div>
   );
 }
 

@@ -4,6 +4,7 @@
 
 1. Go to our project's root folder and run `npm install`
 2. In order to spin up the development server run `npm run dev`
+3. Then go to `http://localhost:3000`, to see the website
 
 ### pages directory/folder:
 

@@ -10,36 +10,12 @@ import { signinSchema } from "../validation/schemas";
 import { useState } from "react";
 import CustomAlert from "../components/alert";
 import InputField from "../components/formik/inputField";
+import { selectUser } from "../reduxStateManagement/slices/userSlice";
+import { useSelector } from "react-redux";
 import Link from "next/link";
-
-// Async function that is responsible for logging in users by connecting
-// to Firebase
-async function login(values, setIsAlert, setVariant, setMessage) {
-  // Nextjs pre-renders the page using the node server, where the 'window' object
-  // is not available as it is in the browser. Therefore, we import app in this
-  // function because first app uses 'window' object and second the 'login' function
-  // only get's called in the browser.
-  const app = (await import("../firebase/config")).app;
-  const auth = getAuth(app);
-
-  try {
-    const userInfo = await signInWithEmailAndPassword(
-      auth,
-      values.email,
-      values.password
-    );
-    if (!userInfo.user.emailVerified) {
-      setIsAlert(true);
-      setVariant("warning");
-      setMessage("Please verify your email first");
-      signOut(auth);
-    }
-  } catch (error) {
-    setIsAlert(true);
-    setVariant("danger");
-    setMessage(error.message);
-  }
-}
+import { useRouter } from "next/router";
+import Spinner from "react-bootstrap/Spinner";
+import { useEffect } from "react";
 
 // Async function that is responsible for sending a password resetting email to
 // users by connecting to Firebase
@@ -77,16 +53,64 @@ function Login() {
   const [isAlert, setIsAlert] = useState(false);
   const [variant, setVariant] = useState("info");
   const [message, setMessage] = useState("message");
+  const [redirect, setRedirect] = useState("");
+  const user = useSelector(selectUser);
+  const router = useRouter();
 
-  function loginHelper(values) {
-    login(values, setIsAlert, setVariant, setMessage);
+  // Async function that is responsible for logging in users by connecting
+  // to Firebase
+  async function login(values) {
+    // Nextjs pre-renders the page using the node server, where the 'window' object
+    // is not available as it is in the browser. Therefore, we import app in this
+    // function because first app uses 'window' object and second the 'login' function only get's called in the browser.
+    const app = (await import("../firebase/config")).app;
+    const auth = getAuth(app);
+
+    try {
+      const userInfo = await signInWithEmailAndPassword(
+        auth,
+        values.email,
+        values.password
+      );
+      if (!userInfo.user.emailVerified) {
+        setIsAlert(true);
+        setVariant("warning");
+        setMessage("Please verify your email first");
+        signOut(auth);
+      } else {
+        if (userInfo.user.displayName) {
+          setRedirect("studyRoom");
+        } else {
+          // Redirect the user to the create profile page
+          setRedirect("createProfile");
+        }
+      }
+    } catch (error) {
+      setIsAlert(true);
+      setVariant("danger");
+      setMessage(error.message);
+    }
   }
+
+  useEffect(() => {
+    if (redirect === "studyRoom" && user) {
+      router.push(`/app/studyRoom/${user.roomId}`);
+    } else if (redirect === "createProfile") {
+      router.push("/app/createProfile");
+    }
+  }, [redirect, router, user]);
 
   function resetPassHelper(email, errors) {
     resetPassword(email, errors, setIsAlert, setVariant, setMessage);
   }
 
-  return (
+  return redirect ? (
+    <div className="vh-100 d-flex justify-content-center align-items-center">
+      <Spinner animation="border" role="status" size="lg">
+        <span className="visually-hidden">Loading...</span>
+      </Spinner>
+    </div>
+  ) : (
     <>
       {isAlert && (
         <CustomAlert
@@ -98,7 +122,7 @@ function Login() {
 
       <Formik
         initialValues={{ email: "", password: "" }}
-        onSubmit={loginHelper}
+        onSubmit={login}
         validationSchema={signinSchema}
       >
         {(props) => (
