@@ -23,12 +23,16 @@ import {
 } from "@100mslive/react-sdk";
 import Spinner from "react-bootstrap/Spinner";
 
-async function joinRoom(name, token, hmsActions) {
+async function joinRoom(name, token, hmsActions, router) {
   //Join the room
-  await hmsActions.join({
-    userName: name,
-    authToken: token,
-  });
+  try {
+    await hmsActions.join({
+      userName: name,
+      authToken: token,
+    });
+  } catch (err) {
+    router.push("/login");
+  }
 }
 
 function StudyRoom() {
@@ -42,12 +46,25 @@ function StudyRoom() {
   const [contents, setContents] = useState(new Map());
   const [reviewInvitation, setReviewInvitation] = useState(false);
   const [date, setDate] = useState(new Date());
-  const [show, setShow] = useState("false");
   const [guestUser, setGuestUser] = useState(false);
   const [roomId, setRoomId] = useState("");
   const [waiting, setWaiting] = useState(false);
   const router = useRouter();
   const hmsActions = useHMSActions();
+
+  useEffect(() => {
+    const { roomId } = router.query;
+
+    if (roomId === "null") {
+      router.push("/app/createProfile");
+    }
+
+    setRoomId(roomId);
+
+    if (!user && roomId !== "null") {
+      setGuestUser(true);
+    }
+  }, [router, user]);
 
   useEffect(() => {
     async function getUserToken() {
@@ -64,12 +81,12 @@ function StudyRoom() {
         }),
       });
       const { token } = await roomResponse.json();
-      joinRoom(user.name, token, hmsActions);
+      joinRoom(user.name, token, hmsActions, router);
     }
-    if (user) {
+    if (user && user.roomId) {
       getUserToken();
     }
-  }, [user, hmsActions]);
+  }, [user, hmsActions, router]);
 
   useEffect(() => {
     window.onunload = () => {
@@ -95,7 +112,6 @@ function StudyRoom() {
           contents = new Map(Object.entries(contents));
           setContents(contents);
         }
-        setShow(true);
       }
     }
 
@@ -103,15 +119,6 @@ function StudyRoom() {
       getCalendarContent();
     }
   }, [user?.uid]);
-
-  useEffect(() => {
-    const { roomId } = router.query;
-    setRoomId(roomId);
-
-    if (!user) {
-      setGuestUser(true);
-    }
-  }, [router, user]);
 
   const saveContents = useCallback(
     async (invitation) => {
@@ -130,20 +137,22 @@ function StudyRoom() {
     //Retrieve user token (used in joining a room)
     const id = Math.floor(Math.random() * 10000) + 1;
 
-    const roomResponse = await fetch("/api/userToken", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        roomId: roomId,
-        userId: `${id}`,
-        role: "guest",
-      }),
-    });
-    const { token } = await roomResponse.json();
-    setWaiting(true);
-    joinRoom(values.name, token, hmsActions);
+    try {
+      const roomResponse = await fetch("/api/userToken", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          roomId: roomId,
+          userId: `${id}`,
+          role: "guest",
+        }),
+      });
+      const { token } = await roomResponse.json();
+      setWaiting(true);
+      joinRoom(values.name, token, hmsActions, router);
+    } catch (err) {}
   }
 
   // Update contents
@@ -161,7 +170,7 @@ function StudyRoom() {
     });
   };
 
-  return ((isConnected && user) || guestUser) && show ? (
+  return (isConnected && user) || guestUser ? (
     waiting && !isConnected ? (
       <div className="vh-100 d-flex justify-content-center align-items-center">
         <Spinner animation="border" role="status" size="lg">
@@ -282,7 +291,15 @@ function ReviewInvitation({
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        message: `Hi, your friend ${user.name} invited you to join them in a meeting held at their online study room at sfsu-study-partner website. Please review the details below: Invitation time: ${content.startTime} to ${content.endTime} \nLink: http://localhost:3000/app/studyRoom/${user.roomId}\n
+        message: `Hi, your friend ${
+          user.name
+        } invited you to join them in a meeting held at their online study room at sfsu-study-partner website. Please review the details below: Invitation time: ${
+          content.startTime
+        } to ${content.endTime} \nLink: ${
+          process.env.NODE_ENV === "development"
+            ? `http://localhost:3000/app/studyRoom/${user.roomId}`
+            : `https://sfsu-study-partner.vercel.app/${user.roomId}`
+        }\n
         Thanks, \n sfsu-study-partner team`,
 
         to: invitees,

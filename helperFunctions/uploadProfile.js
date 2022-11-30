@@ -20,7 +20,7 @@ async function uploadProfileToDatabase(profInfo) {
 
     return roomId;
   } catch (error) {
-    alert(error.message);
+    // alert(error.message);
   }
 }
 

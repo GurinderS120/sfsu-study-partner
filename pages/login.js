@@ -88,7 +88,7 @@ function Login() {
     } catch (error) {
       setIsAlert(true);
       setVariant("danger");
-      setMessage(error.message);
+      setMessage("Please provide valid email and password");
     }
   }
 
@@ -99,6 +99,12 @@ function Login() {
       router.push("/app/createProfile");
     }
   }, [redirect, router, user]);
+
+  // useEffect(() => {
+  //   if (user) {
+  //     router.push(`/app/studyRoom/${user.roomId}`);
+  //   }
+  // }, [router, user]);
 
   function resetPassHelper(email, errors) {
     resetPassword(email, errors, setIsAlert, setVariant, setMessage);
@@ -126,7 +132,7 @@ function Login() {
         validationSchema={signinSchema}
       >
         {(props) => (
-          <div className="form-container">
+          <div className={`form-container ${isAlert ? "mt-5" : ""}`}>
             <Form className="d-flex flex-column">
               <h3 className="form-header">Login</h3>
 

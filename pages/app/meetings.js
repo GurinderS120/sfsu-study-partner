@@ -52,6 +52,14 @@ function Meetings() {
   //   }
   // }, [router, user]);
 
+  useEffect(() => {
+    if (!user) {
+      router.push("/login");
+    } else if (user && !user.name) {
+      router.push("/app/createProfile");
+    }
+  }, [router, user]);
+
   // Fetch calendar contents from database
   useEffect(() => {
     async function getCalendarContent() {
@@ -76,12 +84,6 @@ function Meetings() {
       getCalendarContent();
     }
   }, [user?.uid]);
-
-  useEffect(() => {
-    if (!user) {
-      router.push("/login");
-    }
-  }, [router, user]);
 
   const clickedDay = useCallback((date, event) => {
     setDate(date);
@@ -299,7 +301,11 @@ function ReviewInvitation({
           content.content
         } \nTime: ${content.startTime} to ${content.endTime} \n${
           mode === "Online"
-            ? `Link: http://localhost:3000/app/studyRoom/${user.roomId}\n`
+            ? `Link: ${
+                process.env.NODE_ENV === "development"
+                  ? `http://localhost:3000/app/studyRoom/${user.roomId}`
+                  : `https://sfsu-study-partner.vercel.app/${user.roomId}`
+              }\n`
             : ""
         }Thanks, \n sfsu-study-partner team`,
 

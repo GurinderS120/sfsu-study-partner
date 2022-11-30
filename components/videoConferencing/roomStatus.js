@@ -185,19 +185,6 @@ function RoomStatus({
                     </>
                   )}
 
-                  <label>
-                    <span style={{ width: "4rem", display: "inline-block" }}>
-                      Public
-                    </span>
-                    <input
-                      type="radio"
-                      value="Public"
-                      className="ms-1"
-                      checked={value === "Public"}
-                      onChange={handleChange}
-                    />
-                  </label>
-
                   <Container className="mt-3">
                     <Row className="justify-content-start">
                       <Col xs="auto" className="ps-0">

@@ -15,6 +15,8 @@ import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/router";
 import Spinner from "react-bootstrap/Spinner";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import annonymousUser from "../../public/anonymous_user.png";
 
 // This function is responsible for compressing and converting file into
 // base64 encoded string which can be used as a url in src attribute of
@@ -56,11 +58,15 @@ function CreateProfile() {
   const [img, setImg] = useState(null);
   const [modal, setModal] = useState(false);
   const fileRef = useRef(null);
+  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
-    if (!user) {
-      router.push("/login");
+    if (user && user.name) {
+      router.push("/app/meetings");
     }
+    // else if (!user) {
+    //   router.push("/login");
+    // }
   }, [router, user]);
 
   // We need to use a helper function because you can only use "UseSelector()"
@@ -74,11 +80,13 @@ function CreateProfile() {
         user.uid
       }/userprofile/profileImg.${values.pic.type.replace("image/", "")}`;
 
-      uploadImageToCloudStorage({
+      await uploadImageToCloudStorage({
         url: values.pic.url,
         type: values.pic.type,
         storageRef: imgStrgRef,
       });
+
+      setSubmitted(true);
 
       const roomId = await uploadProfileToDatabase({
         values,
@@ -90,6 +98,8 @@ function CreateProfile() {
       const app = (await import("../../firebase/config")).app;
       const auth = getAuth(app);
 
+      const picUrl = await downloadPic(imgStrgRef);
+
       updateProfile(auth.currentUser, {
         displayName: values.name,
         photoURL: imgStrgRef,
@@ -99,17 +109,31 @@ function CreateProfile() {
       dispatch(
         updateUserProfile({
           name: values.name,
-          pic: imgStrgRef,
+          pic: picUrl,
           roomId: roomId,
           major: values.major,
         })
       );
     } else {
-      alert("Not logged in");
+      // alert("Not logged in");
     }
   }
 
-  return user ? (
+  async function downloadPic(pic) {
+    const storage = getStorage();
+    try {
+      const url = await getDownloadURL(ref(storage, pic));
+      if (url) {
+        return url;
+      } else {
+        return annonymousUser;
+      }
+    } catch (err) {
+      return annonymousUser;
+    }
+  }
+
+  return user && !submitted ? (
     <Formik
       initialValues={{ pic: "", name: "", major: "" }}
       onSubmit={submitHandler}

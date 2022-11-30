@@ -12,7 +12,7 @@ async function uploadImageToCloudStorage(pic) {
   try {
     await uploadString(storageRef, pic.url, "data_url", metaData);
   } catch (error) {
-    alert("error in uploadImageTo...");
+    // alert("error in uploadImageTo...");
   }
 }
 
