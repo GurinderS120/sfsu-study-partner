@@ -133,3 +133,32 @@ export const studyRoomSchema = yup.object().shape({
     )
     .required("Required"),
 });
+
+export const contactSchema = yup.object().shape({
+  name: yup
+    .string()
+    .min(1, "Name must be at least 1 character long")
+    .max(100, "Please enter a nickname")
+    .matches(
+      /^[\S]+(\s+[\S]+)*$/,
+      "Please remove spaces from the beginning and end"
+    )
+    .required("Required"),
+  email: yup
+    .string()
+    .matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Please provide valid email")
+    .matches(
+      /^[\S]+(\s+[\S]+)*$/,
+      "Please remove spaces from the beginning and end"
+    )
+    .required("Required"),
+  message: yup
+    .string()
+    .min(2, "Message must be at least 2 characters long")
+    .max(200, "Please try to be brief")
+    .matches(
+      /^[\S]+(\s+[\S]+)*$/,
+      "Please remove spaces from the beginning and end"
+    )
+    .required("Required"),
+});
