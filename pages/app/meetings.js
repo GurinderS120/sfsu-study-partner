@@ -304,7 +304,7 @@ function ReviewInvitation({
             ? `Link: ${
                 process.env.NODE_ENV === "development"
                   ? `http://localhost:3000/app/studyRoom/${user.roomId}`
-                  : `https://sfsu-study-partner.vercel.app/${user.roomId}`
+                  : `https://sfsu-study-partner.vercel.app/app/studyRoom/${user.roomId}`
               }\n`
             : ""
         }Thanks, \n sfsu-study-partner team`,
