@@ -43,6 +43,7 @@ async function downloadPic(pic) {
     return null;
   }
 }
+import Footer from "./footer"
 
 // Layout acts as a wrapper for our entire website, and children represent
 // different pages (we pass in a page one at a time as Layout's child,
@@ -105,6 +106,7 @@ function Layout({ children }) {
       </Head>
       <Navbar />
       <main className="mt-5">{children}</main>
+      <Footer />
     </>
   ) : (
     <div className="vh-100 d-flex justify-content-center align-items-center">
