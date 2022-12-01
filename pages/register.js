@@ -19,8 +19,7 @@ async function register(
   setMessage,
   setIsAlert,
   setVariant,
-  router,
-  setNewUser
+  router
 ) {
   // Nextjs pre-renders the page using the node server, where the 'window' object
   // is not available as it is in the browser. Therefore, we import app in this
@@ -48,7 +47,6 @@ async function register(
       "Please verify your email by clicking on the link sent in the verification email"
     );
     setIsAlert(true);
-    setNewUser(true);
     setTimeout(() => {
       router.push("/login");
     }, 5000);
@@ -84,15 +82,7 @@ function Register() {
       <Formik
         initialValues={{ email: "", password: "", confirmPassword: "" }}
         onSubmit={(values, actions) =>
-          register(
-            values,
-            actions,
-            setMessage,
-            setIsAlert,
-            setVariant,
-            router,
-            setNewUser
-          )
+          register(values, actions, setMessage, setIsAlert, setVariant, router)
         }
         validationSchema={signupSchema}
       >
