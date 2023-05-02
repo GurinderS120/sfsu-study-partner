@@ -27,17 +27,23 @@ function Home() {
   useEffect(() => {
     const { asPath } = router;
 
+    const scrollProperties = {
+      behavior: "smooth",
+      block: "start",
+      inline: "nearest",
+    };
+
     switch (asPath.substring(2)) {
       case "about":
-        aboutRef.current.scrollIntoView({ behavior: "smooth" });
+        aboutRef.current.scrollIntoView(scrollProperties);
         break;
 
       case "product":
-        productRef.current.scrollIntoView({ behavior: "smooth" });
+        productRef.current.scrollIntoView(scrollProperties);
         break;
 
       case "contact":
-        contactRef.current.scrollIntoView({ behavior: "smooth" });
+        contactRef.current.scrollIntoView(scrollProperties);
         break;
 
       default:
@@ -68,10 +74,11 @@ function Home() {
       <Container fluid>
         <Row
           id="about"
-          ref={aboutRef}
           className="me-md-5"
+          ref={aboutRef}
           style={{
             marginBottom: "10rem",
+            scrollMarginTop: "100px",
             marginTop: "7rem",
           }}
         >
@@ -106,6 +113,7 @@ function Home() {
           style={{
             marginBottom: "10rem",
             backgroundColor: "#f1f5f8",
+            scrollMarginTop: "50px",
             padding: "4rem 1rem",
           }}
         >
@@ -132,8 +140,7 @@ function Home() {
         <Row
           id="contact"
           className="justify-content-center"
-          ref={contactRef}
-          style={{ marginBottom: "5rem" }}
+          style={{ marginBottom: "5rem", scrollMarginTop: "100px" }}
         >
           <Col xs="auto">
             <h3 className="fw-bold mb-5 text-center">Contact Us</h3>
