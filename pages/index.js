@@ -139,6 +139,7 @@ function Home() {
         </Row>
         <Row
           id="contact"
+          ref={contactRef}
           className="justify-content-center"
           style={{ marginBottom: "5rem", scrollMarginTop: "100px" }}
         >
